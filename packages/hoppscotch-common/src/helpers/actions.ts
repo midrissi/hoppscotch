@@ -25,6 +25,7 @@ export type HoppAction =
   | "modals.my.environment.edit" // Edit current personal environment
   | "modals.team.environment.edit" // Edit current team environment
   | "navigation.jump.rest" // Jump to REST page
+  | "navigation.jump.data" // Jump to Data page
   | "navigation.jump.graphql" // Jump to GraphQL page
   | "navigation.jump.realtime" // Jump to realtime page
   | "navigation.jump.documentation" // Jump to documentation page

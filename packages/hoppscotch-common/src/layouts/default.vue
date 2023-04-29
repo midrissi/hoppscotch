@@ -161,6 +161,10 @@ defineActionHandler("navigation.jump.rest", () => {
   router.push({ path: "/" })
 })
 
+defineActionHandler("navigation.jump.data", () => {
+  router.push({ path: "/data" })
+})
+
 defineActionHandler("navigation.jump.graphql", () => {
   router.push({ path: "/graphql" })
 })

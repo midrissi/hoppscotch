@@ -104,6 +104,10 @@ export default [
         label: "shortcut.navigation.forward",
       },
       {
+        keys: [getPlatformAlternateKey(), "D"],
+        label: "shortcut.navigation.data",
+      },
+      {
         keys: [getPlatformAlternateKey(), "R"],
         label: "shortcut.navigation.rest",
       },
@@ -161,6 +165,12 @@ export const spotlight = [
         keys: [getPlatformAlternateKey(), "R"],
         label: "shortcut.navigation.rest",
         action: "navigation.jump.rest",
+        icon: IconArrowRight,
+      },
+      {
+        keys: [getPlatformAlternateKey(), "D"],
+        label: "shortcut.navigation.data",
+        action: "navigation.jump.data",
         icon: IconArrowRight,
       },
       {
@@ -236,6 +246,13 @@ export const fuse = [
     keys: [getPlatformAlternateKey(), "R"],
     label: "shortcut.navigation.rest",
     action: "navigation.jump.rest",
+    icon: IconArrowRight,
+    tags: ["rest", "jump", "page", "navigation", "go"],
+  },
+  {
+    keys: [getPlatformAlternateKey(), "D"],
+    label: "shortcut.navigation.data",
+    action: "navigation.jump.data",
     icon: IconArrowRight,
     tags: ["rest", "jump", "page", "navigation", "go"],
   },

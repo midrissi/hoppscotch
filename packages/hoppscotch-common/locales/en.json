@@ -358,6 +358,7 @@
     "profile": "Profile",
     "realtime": "Realtime",
     "rest": "REST",
+    "data": "Data",
     "settings": "Settings"
   },
   "preRequest": {

@@ -358,6 +358,7 @@
     "profile": "Profile",
     "realtime": "Temps réel",
     "rest": "REST",
+    "data": "Données",
     "settings": "Paramètres"
   },
   "preRequest": {
