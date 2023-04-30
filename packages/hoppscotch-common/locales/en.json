@@ -163,6 +163,9 @@
     "generate_message": "Import any Hoppscotch collection to generate API documentation on-the-go."
   },
   "empty": {
+    "data": {
+      "tabs": "Please select a collection or an item"
+    },
     "authorization": "This request does not use any authorization",
     "body": "This request does not have a body",
     "collection": "Collection is empty",

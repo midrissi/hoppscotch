@@ -5,9 +5,19 @@
         <DataSidebar />
       </template>
       <template #primary>
-        <p class="flex items-center w-full h-full justify-center">
-          Please select a collection or an item
-        </p>
+        <div
+          class="flex flex-col items-center justify-center p-4 text-secondaryLight h-full"
+        >
+          <img
+            :src="`/images/states/${colorMode.value}/youre_lost.svg`"
+            loading="lazy"
+            class="inline-flex flex-col object-contain object-center w-16 h-16 mb-4"
+            :alt="`${t('empty.collection')}`"
+          />
+          <span class="pb-4 text-center">
+            {{ t("empty.data.tabs") }}
+          </span>
+        </div>
       </template>
     </AppPaneLayout>
     <HoppSmartConfirmModal
@@ -53,12 +63,14 @@ import {
 import { useToast } from "~/composables/toast"
 import { PersistableRESTTabState } from "~/helpers/rest/tab"
 import { watchDebounced } from "@vueuse/core"
+import { useColorMode } from "@composables/theming"
 
 const savingRequest = ref(false)
 const confirmingCloseForTabID = ref<string | null>(null)
 
 const t = useI18n()
 const toast = useToast()
+const colorMode = useColorMode()
 
 const confirmSync = ref(false)
 const tabStateForSync = ref<PersistableRESTTabState | null>(null)
