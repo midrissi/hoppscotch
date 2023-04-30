@@ -536,6 +536,7 @@
       "profile": "Go to Profile page",
       "realtime": "Go to Realtime page",
       "rest": "Go to REST page",
+      "data": "Go to Data page",
       "settings": "Go to Settings page",
       "title": "Navigation"
     },

@@ -1,5 +1,6 @@
 export * from "./rest"
 export * from "./graphql"
+export * from "./data"
 export * from "./collection"
 export * from "./rawKeyValue"
 export * from "./environment"

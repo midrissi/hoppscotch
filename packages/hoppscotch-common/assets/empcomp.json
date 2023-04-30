@@ -1,0 +1,155 @@
+{
+  "id": "123",
+  "name": "EmpComp",
+  "description": "EmpComp database faker",
+  "meta": {
+    "locale": "en",
+    "endpoint": "<<host>>",
+    "headers": [
+      {
+        "key": "Content-Type",
+        "value": "application/json"
+      },
+      {
+        "key": "Cookie",
+        "value": "<<4DSID>>"
+      }
+    ]
+  },
+  "events": {
+    "pre": {
+      "script": "app.log('runner:init')"
+    },
+    "post": {
+      "script": "app.log('runner:done')"
+    }
+  },
+  "variables": [
+    {
+      "key": "host",
+      "value": "https://localhost:7443"
+    },
+    {
+      "key": "4DSID",
+      "value": "123"
+    },
+    {
+      "key": "inject",
+      "value": "alert('hi')"
+    }
+  ],
+  "items": [
+    {
+      "id": "1",
+      "name": "Companies",
+      "description": "Generate data of the companies datatable",
+      "meta": {
+        "dataClass": "Company",
+        "count": 200,
+        "top": 100
+      },
+      "events": {
+        "pre": {
+          "script": {
+            "exec": ["app.log('init companies', <<inject>>);"]
+          }
+        },
+        "page:pre": {
+          "script": {
+            "exec": ["app.log('pre page');"]
+          }
+        },
+        "page:post": {
+          "script": {
+            "exec": ["app.log('post page', page);"]
+          }
+        },
+        "post": {
+          "script": {
+            "exec": ["app.log('post companies');"]
+          }
+        }
+      },
+      "fields": [
+        {
+          "name": "name",
+          "api": "company.name"
+        },
+        {
+          "name": "address",
+          "api": "address.streetAddress",
+          "options": {
+            "options.useFullAddress": true
+          }
+        },
+        {
+          "name": "color",
+          "api": "color.rgb",
+          "options": {
+            "options.format": "css"
+          }
+        }
+      ]
+    },
+    {
+      "id": "1",
+      "locale": "ar",
+      "name": "Employees",
+      "description": "Generate data of the employees datatable",
+      "meta": {
+        "dataClass": "Employee",
+        "count": 15,
+        "top": 20
+      },
+      "events": {
+        "pre": {
+          "script": {
+            "exec": ["app.log('some text');", "app.log('other text');"]
+          }
+        },
+        "entity:pre": {
+          "script": {
+            "exec": [
+              "app.log('pre entity')",
+              "entity.age = Math.ceil(Math.random()*100)",
+              "entity.sid = <<4DSID>>"
+            ]
+          }
+        },
+        "entity:post": {
+          "script": {
+            "exec": ["app.log('post entity', entity);"]
+          }
+        },
+        "page:pre": {
+          "script": {
+            "exec": ["app.log('pre page', page);"]
+          }
+        },
+        "page:post": {
+          "script": {
+            "exec": ["app.log('post page', page);"]
+          }
+        },
+        "post": {
+          "script": {
+            "exec": ["app.log('post employees');"]
+          }
+        }
+      },
+      "fields": [
+        {
+          "name": "firstname",
+          "api": "name.firstName",
+          "options": {
+            "sex": "male"
+          }
+        },
+        {
+          "name": "lastname",
+          "api": "name.lastName"
+        }
+      ]
+    }
+  ]
+}

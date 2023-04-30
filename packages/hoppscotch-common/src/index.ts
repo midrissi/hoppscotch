@@ -1,6 +1,7 @@
 import { createApp } from "vue"
 import { PlatformDef, setPlatformDef } from "./platform"
 import { setupLocalPersistence } from "./newstore/localpersistence"
+import { setupLocalPersistence as setupDataLocalPersistence } from "./newstore/data/storage"
 import { performMigrations } from "./helpers/migrations"
 import { initializeApp } from "./helpers/app"
 import { initBackendGQLClient } from "./helpers/backend/GQLClient"
@@ -23,6 +24,7 @@ export function createHoppApp(el: string | Element, platformDef: PlatformDef) {
   initializeApp()
   setupLocalPersistence()
   performMigrations()
+  setupDataLocalPersistence()
 
   HOPP_MODULES.forEach((mod) => mod.onVueAppInit?.(app))
 
