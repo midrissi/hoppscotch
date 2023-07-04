@@ -34,6 +34,7 @@ import { inputTheme } from "~/helpers/editor/themes/baseTheme"
 import { HoppReactiveEnvPlugin } from "~/helpers/editor/extensions/HoppEnvironment"
 import { useReadonlyStream } from "@composables/stream"
 import { AggregateEnvironment, aggregateEnvs$ } from "~/newstore/environments"
+import { platform } from "~/platform"
 
 const props = withDefaults(
   defineProps<{
@@ -43,6 +44,7 @@ const props = withDefaults(
     envs?: { key: string; value: string; source: string }[] | null
     focus?: boolean
     selectTextOnMount?: boolean
+    environmentHighlights?: boolean
     readonly?: boolean
   }>(),
   {
@@ -52,6 +54,7 @@ const props = withDefaults(
     envs: null,
     focus: false,
     readonly: false,
+    environmentHighlights: true,
   }
 )
 
@@ -141,7 +144,7 @@ const initView = (el: any) => {
     tooltips({
       position: "absolute",
     }),
-    envTooltipPlugin,
+    props.environmentHighlights ? envTooltipPlugin : [],
     placeholderExt(props.placeholder),
     EditorView.domEventHandlers({
       paste(ev) {
@@ -219,6 +222,7 @@ onMounted(() => {
   if (editor.value) {
     if (!view.value) initView(editor.value)
     if (props.selectTextOnMount) triggerTextSelection()
+    platform.ui?.onCodemirrorInstanceMount?.(editor.value)
   }
 })
 

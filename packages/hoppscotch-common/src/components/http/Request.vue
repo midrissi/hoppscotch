@@ -217,6 +217,7 @@
       @hide-modal="showCodegenModal = false"
     />
     <CollectionsSaveRequest
+      v-if="showSaveRequestModal"
       mode="rest"
       :show="showSaveRequestModal"
       @hide-modal="showSaveRequestModal = false"
@@ -229,11 +230,10 @@ import { useI18n } from "@composables/i18n"
 import { useSetting } from "@composables/settings"
 import { useStreamSubscriber } from "@composables/stream"
 import { useToast } from "@composables/toast"
-import { completePageProgress, startPageProgress } from "@modules/loadingbar"
 import { refAutoReset, useVModel } from "@vueuse/core"
 import * as E from "fp-ts/Either"
 import { isLeft, isRight } from "fp-ts/lib/Either"
-import { computed, ref, watch } from "vue"
+import { computed, onBeforeUnmount, ref } from "vue"
 import { defineActionHandler } from "~/helpers/actions"
 import { runMutation } from "~/helpers/backend/GQLClient"
 import { UpdateRequestDocument } from "~/helpers/backend/graphql"
@@ -259,6 +259,8 @@ import IconSave from "~icons/lucide/save"
 import IconShare2 from "~icons/lucide/share-2"
 import { HoppRESTTab } from "~/helpers/rest/tab"
 import { getDefaultRESTRequest } from "~/helpers/rest/default"
+import { platform } from "~/platform"
+import { getCurrentStrategyID } from "~/helpers/network"
 
 const t = useI18n()
 
@@ -311,39 +313,6 @@ const clearAll = ref<any | null>(null)
 const copyRequestAction = ref<any | null>(null)
 const saveRequestAction = ref<any | null>(null)
 
-// Update Nuxt Loading bar
-watch(loading, () => {
-  if (loading.value) {
-    startPageProgress()
-  } else {
-    completePageProgress()
-  }
-})
-
-// TODO: make this oAuthURL() work
-
-// function oAuthURL() {
-//   const auth = useReadonlyStream(props.request.auth$, {
-//     authType: "none",
-//     authActive: true,
-//   })
-
-//   const oauth2Token = pluckRef(auth as Ref<HoppRESTAuthOAuth2>, "token")
-
-//   onBeforeMount(async () => {
-//     try {
-//       const tokenInfo = await oauthRedirect()
-//       if (Object.prototype.hasOwnProperty.call(tokenInfo, "access_token")) {
-//         if (typeof tokenInfo === "object") {
-//           oauth2Token.value = tokenInfo.access_token
-//         }
-//       }
-
-//       // eslint-disable-next-line no-empty
-//     } catch (_) {}
-//   })
-// }
-
 const newSendRequest = async () => {
   if (newEndpoint.value === "" || /^\s+$/.test(newEndpoint.value)) {
     toast.error(`${t("empty.endpoint")}`)
@@ -353,6 +322,13 @@ const newSendRequest = async () => {
   ensureMethodInEndpoint()
 
   loading.value = true
+
+  // Log the request run into analytics
+  platform.analytics?.logEvent({
+    type: "HOPP_REQUEST_RUN",
+    platform: "rest",
+    strategy: getCurrentStrategyID(),
+  })
 
   // Double calling is because the function returns a TaskEither than should be executed
   const streamResult = await runRESTRequest$(tab)()
@@ -471,6 +447,11 @@ const copyRequest = async () => {
     shareLink.value = ""
     fetchingShareLink.value = true
     const shortcodeResult = await createShortcode(tab.value.document.request)()
+
+    platform.analytics?.logEvent({
+      type: "HOPP_SHORTCODE_CREATED",
+    })
+
     if (E.isLeft(shortcodeResult)) {
       toast.error(`${shortcodeResult.left.error}`)
       shareLink.value = `${t("error.something_went_wrong")}`
@@ -541,6 +522,14 @@ const saveRequest = () => {
       editRESTRequest(saveCtx.folderPath, saveCtx.requestIndex, req)
 
       tab.value.document.isDirty = false
+
+      platform.analytics?.logEvent({
+        type: "HOPP_SAVE_REQUEST",
+        platform: "rest",
+        createdNow: false,
+        workspaceType: "personal",
+      })
+
       toast.success(`${t("request.saved")}`)
     } catch (e) {
       tab.value.document.saveContext = undefined
@@ -551,6 +540,13 @@ const saveRequest = () => {
 
     // TODO: handle error case (NOTE: overwriteRequestTeams is async)
     try {
+      platform.analytics?.logEvent({
+        type: "HOPP_SAVE_REQUEST",
+        platform: "rest",
+        createdNow: false,
+        workspaceType: "team",
+      })
+
       runMutation(UpdateRequestDocument, {
         requestID: saveCtx.requestID,
         data: {
@@ -573,6 +569,10 @@ const saveRequest = () => {
     }
   }
 }
+
+onBeforeUnmount(() => {
+  if (loading.value) cancelRequest()
+})
 
 defineActionHandler("request.send-cancel", () => {
   if (!loading.value) newSendRequest()

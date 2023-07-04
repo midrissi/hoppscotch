@@ -436,6 +436,7 @@
     "view_my_links": "View my links"
   },
   "response": {
+    "audio": "Audio",
     "body": "هيئة الاستجابة",
     "filter_response_body": "Filter JSON response body (uses JSONPath syntax)",
     "headers": "الرؤوس",
@@ -449,6 +450,7 @@
     "status": "حالة",
     "time": "وقت",
     "title": "إجابة",
+    "video": "Video",
     "waiting_for_connection": "في انتظار الاتصال",
     "xml": "XML"
   },
